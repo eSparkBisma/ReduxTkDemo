@@ -1,19 +1,10 @@
 import React, {useState} from 'react';
-import {
-  TouchableOpacity,
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-} from 'react-native';
-
-import {useDispatch, useSelector} from 'react-redux';
-import {removeTask, editTask, editingTask} from '../store/taskSlice';
+import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
+import {useDispatch} from 'react-redux';
+import {isEditingTask, removeTask} from '../store/taskSlice';
 
 const Task = props => {
   const dispatch = useDispatch();
-  const editTitle = useSelector(state => state.task.editTitle);
-  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <View style={styles.tasks}>
@@ -22,28 +13,13 @@ const Task = props => {
           style={styles.box}
           onPress={() => dispatch(removeTask(props.index))}></TouchableOpacity>
       </View>
-      {isEditing ? (
-        <TextInput
-          style={styles.editInput}
-          value={editTitle}
-          onChangeText={text => dispatch(editingTask(text))}
-          onBlur={() => {
-            if (editTitle !== '') {
-              dispatch(editTask({index: props.index, newText: editTitle}));
-              setIsEditing(false);
-            }
-          }}
-          autoFocus
-        />
-      ) : (
-        <Text style={styles.tasksText}>{props.text}</Text>
-      )}
+
+      <Text style={styles.tasksText}>{props.text}</Text>
+
       <TouchableOpacity
         style={styles.editButton}
-        onPress={() => setIsEditing(!isEditing)}>
-        <Text style={styles.editButtonText}>
-          {isEditing ? (editTitle === '' ? 'Cancel' : 'Done') : 'Edit'}
-        </Text>
+        onPress={() => dispatch(isEditingTask(props.index))}>
+        <Text style={styles.editButtonText}>Edit</Text>
       </TouchableOpacity>
     </View>
   );

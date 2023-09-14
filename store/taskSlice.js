@@ -3,7 +3,8 @@ import {createSlice} from '@reduxjs/toolkit';
 const initialState = {
   data: [],
   title: '',
-  editTitle: '',
+  isEditing: false,
+  currentIndex: 0,
 };
 const taskSlice = createSlice({
   name: 'tasks',
@@ -23,18 +24,25 @@ const taskSlice = createSlice({
       state.data.splice(indexToRemove, 1);
     },
     editTask: (state, action) => {
-      if (state.editTitle !== '') {
-        const {index, newText} = action.payload;
-        state.data[index] = newText;
-        state.editTitle = '';
-      }
+      state.data[state.currentIndex] = state.title;
     },
     editingTask: (state, action) => {
-      state.editTitle = action.payload;
+      state.title = action.payload;
+    },
+    isEditingTask: (state, action) => {
+      state.currentIndex = action.payload;
+      state.title = state.data[state.currentIndex];
+      state.isEditing = true;
     },
   },
 });
 
-export const {addTask, removeTask, editTask, addingTask, editingTask} =
-  taskSlice.actions;
+export const {
+  addTask,
+  removeTask,
+  editTask,
+  addingTask,
+  editingTask,
+  isEditingTask,
+} = taskSlice.actions;
 export default taskSlice.reducer;
