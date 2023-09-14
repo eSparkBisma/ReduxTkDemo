@@ -7,36 +7,32 @@ import {
   TextInput,
 } from 'react-native';
 
-import {useDispatch} from 'react-redux';
-import {removeTask, editTask} from '../store/taskSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {removeTask, editTask, editingTask} from '../store/taskSlice';
 
 const Task = props => {
   const dispatch = useDispatch();
+  const editTitle = useSelector(state => state.task.editTitle);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedText, setEditedText] = useState(props.text);
-
-  const handleTaskCompletion = () => {
-    dispatch(removeTask(props.index));
-  };
-
-  const handleEditSubmit = () => {
-    dispatch(editTask({index: props.index, newText: editedText}));
-    setIsEditing(false);
-  };
 
   return (
     <View style={styles.tasks}>
       <View style={styles.left}>
         <TouchableOpacity
           style={styles.box}
-          onPress={handleTaskCompletion}></TouchableOpacity>
+          onPress={() => dispatch(removeTask(props.index))}></TouchableOpacity>
       </View>
       {isEditing ? (
         <TextInput
           style={styles.editInput}
-          value={editedText}
-          onChangeText={setEditedText}
-          onBlur={handleEditSubmit}
+          value={editTitle}
+          onChangeText={text => dispatch(editingTask(text))}
+          onBlur={() => {
+            if (editTitle !== '') {
+              dispatch(editTask({index: props.index, newText: editTitle}));
+              setIsEditing(false);
+            }
+          }}
           autoFocus
         />
       ) : (
@@ -45,7 +41,9 @@ const Task = props => {
       <TouchableOpacity
         style={styles.editButton}
         onPress={() => setIsEditing(!isEditing)}>
-        <Text style={styles.editButtonText}>Edit</Text>
+        <Text style={styles.editButtonText}>
+          {isEditing ? (editTitle === '' ? 'Cancel' : 'Done') : 'Edit'}
+        </Text>
       </TouchableOpacity>
     </View>
   );

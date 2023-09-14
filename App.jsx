@@ -10,56 +10,53 @@ import {
   View,
 } from 'react-native';
 import Task from './components/Task';
-import {addTask} from './store/taskSlice';
-import store from './src/store';
+import {addTask, addingTask} from './store/taskSlice';
+import {store, persistor} from './src/store';
 import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
 
 export default function App() {
-  const [task, setTask] = useState('');
+  // const [task, setTask] = useState('');
   const data = useSelector(state => state.task.data);
+  const title = useSelector(state => state.task.title);
   const dispatch = useDispatch();
-
-  const addNewTask = () => {
-    if (task) {
-      dispatch(addTask(task));
-      setTask('');
-    }
-  };
 
   return (
     <Provider store={store}>
-      <KeyboardAvoidingView behavior="" style={styles.container}>
-        {/* content */}
-        <View>
-          <View style={{...styles.header}} />
-          <Text style={styles.taskTitle}>Tasks for today</Text>
-        </View>
+      <PersistGate loading={null} persistor={persistor}>
+        <KeyboardAvoidingView behavior="" style={styles.container}>
+          {/* content */}
+          <View>
+            <View style={{...styles.header}} />
+            <Text style={styles.taskTitle}>Tasks for today</Text>
+          </View>
 
-        <FlatList
-          style={styles.tasks}
-          data={data}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({item, index}) => <Task text={item} index={index} />}
-          ListEmptyComponent={
-            <Text style={styles.noTasks}>Great Job! No tasks Due</Text>
-          }
-        />
-
-        {/* footer */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Write a task"
-            value={task}
-            onChangeText={text => setTask(text)}
+          <FlatList
+            style={styles.tasks}
+            data={data}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item, index}) => <Task text={item} index={index} />}
+            ListEmptyComponent={
+              <Text style={styles.noTasks}>Great Job! No tasks Due</Text>
+            }
           />
-          <TouchableOpacity
-            style={styles.addNewTask}
-            onPress={() => addNewTask()}>
-            <Text style={styles.addText}>+</Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
+
+          {/* footer */}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Write a task"
+              value={title}
+              onChangeText={text => dispatch(addingTask(text))}
+            />
+            <TouchableOpacity
+              style={styles.addNewTask}
+              onPress={() => dispatch(addTask())}>
+              <Text style={styles.addText}>+</Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+      </PersistGate>
     </Provider>
   );
 }
