@@ -23,8 +23,10 @@ const taskSlice = createSlice({
       const indexToRemove = action.payload;
       state.data.splice(indexToRemove, 1);
     },
-    editTask: (state, action) => {
+    editTask: state => {
       state.data[state.currentIndex] = state.title;
+      state.isEditing = false;
+      state.title = '';
     },
     editingTask: (state, action) => {
       state.title = action.payload;

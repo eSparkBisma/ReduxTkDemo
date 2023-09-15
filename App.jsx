@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   FlatList,
@@ -16,7 +16,6 @@ import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 
 export default function App() {
-  // const [task, setTask] = useState('');
   const data = useSelector(state => state.task.data);
   const title = useSelector(state => state.task.title);
   const isEditing = useSelector(state => state.task.isEditing);
@@ -26,7 +25,6 @@ export default function App() {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <KeyboardAvoidingView behavior="" style={styles.container}>
-          {/* content */}
           <View>
             <View style={{...styles.header}} />
             <Text style={styles.taskTitle}>Tasks for today</Text>
@@ -42,7 +40,6 @@ export default function App() {
             }
           />
 
-          {/* footer */}
           <View style={styles.inputContainer}>
             {isEditing ? (
               <TextInput

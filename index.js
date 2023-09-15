@@ -15,5 +15,3 @@ const ReduxApp = () => (
 );
 
 AppRegistry.registerComponent(appName, () => ReduxApp);
-
-// AppRegistry.registerComponent(appName, () => App);

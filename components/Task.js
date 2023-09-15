@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {isEditingTask, removeTask} from '../store/taskSlice';
